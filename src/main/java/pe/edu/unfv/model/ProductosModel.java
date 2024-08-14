@@ -39,5 +39,5 @@ public class ProductosModel {
 	
 	@OneToOne
 	@JoinColumn(name = "categoria_id")
-	private CategoriaModel categoriaId;	
+	private CategoriasModel categoriaId;	
 }
