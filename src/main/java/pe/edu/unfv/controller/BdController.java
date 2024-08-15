@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
 import pe.edu.unfv.model.CategoriasModel;
+import pe.edu.unfv.model.ProductosModel;
 import pe.edu.unfv.service.implement.CategoriasServiceImpl;
+import pe.edu.unfv.service.implement.ProductosServiceImpl;
 import pe.edu.unfv.utilidades.Utilidades;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class BdController {
 
 	private CategoriasServiceImpl categoriasServiceImpl;
+	private ProductosServiceImpl productosServiceImpl;
 	
 	@GetMapping("categorias")
 	public List<CategoriasModel> categorias() {
@@ -57,6 +60,20 @@ public class BdController {
 		this.categoriasServiceImpl.saveCategory(categoria);
 						
 		return Utilidades.generateResponse(HttpStatus.OK, "Se edito el registro exitosamente");
+	}
+	
+	/////////////////////////////////=================================////////////////////////
+	
+	@GetMapping("productos")
+	public List<ProductosModel> productos() {
+		
+		return this.productosServiceImpl.getAllProducts();
+	}
+	
+	@GetMapping("/productos/{id}")
+	public ProductosModel productos_detalle(@PathVariable("id") Integer id) {
+		
+		return this.productosServiceImpl.getProductById(id);
 	}
 	
 }
