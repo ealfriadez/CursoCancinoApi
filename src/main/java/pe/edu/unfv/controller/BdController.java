@@ -20,6 +20,7 @@ import pe.edu.unfv.model.CategoriasModel;
 import pe.edu.unfv.model.ProductosModel;
 import pe.edu.unfv.service.implement.CategoriasServiceImpl;
 import pe.edu.unfv.service.implement.ProductosServiceImpl;
+import pe.edu.unfv.utilidades.Constantes;
 import pe.edu.unfv.utilidades.Utilidades;
 
 
@@ -83,42 +84,43 @@ public class BdController {
 	}
 	/////////////////////////////////=================================////////////////////////
 	
-	@GetMapping("productos")
+	@GetMapping("/productos")
 	public List<ProductosModel> productos() {
 		
 		return this.productosServiceImpl.getAllProducts();
-	}	
+	}		
 	
 	@PostMapping("/productos")
-	public ResponseEntity<Object> productos_post(
-			ProductosModel producto,
-			@RequestParam("file") MultipartFile file) {
-				
+	public ResponseEntity<Object> productos_post(ProductosModel producto, @RequestParam("file") MultipartFile file)
+	{
 		HttpStatus status = HttpStatus.OK;
-		String mensaje = "";
-		
-		if (!file.isEmpty()) {
-			
-			String nombreImagen = Utilidades.guardarArchivo(file, mensaje);
-			if (nombreImagen=="no") {
-				status = HttpStatus.BAD_REQUEST;
-				mensaje = "La foto enviada no es valida, debe ser JPG|PNG";
-			} else {
-				if(nombreImagen!=null) {
-					producto.setFoto(nombreImagen);
-					producto.setSlug(producto.getNombre());
-					
-					this.productosServiceImpl.saveProduct(producto);
-					
-					status=HttpStatus.CREATED;
-					mensaje="Se creo el registro exitosamente.";
-				}
-			}		
-		} else {
+		String mensaje ="";
+		if(!file.isEmpty()) 
+		{
+			 String nombreImagen = Utilidades.guardarArchivo(file, Constantes.RUTA_UPLOAD+"producto2/");
+			 if(nombreImagen=="no") 
+			 {
+				 status = HttpStatus.BAD_REQUEST;
+				 mensaje ="La foto enviada no es válida, debe ser JPG|PNG";
+			 }else
+			 {
+				 if(nombreImagen!=null) 
+				 {
+					 producto.setFoto(nombreImagen);
+					 producto.setSlug(Utilidades.getSlug(producto.getNombre()));
+					 
+					 this.productosServiceImpl.saveProduct(producto);
+					 
+					 status= HttpStatus.CREATED;
+					 mensaje="Se creó el registro exitosamente";
+				 }
+			 }
+		}else 
+		{
 			status = HttpStatus.BAD_REQUEST;
-			mensaje = "La foto enviada no es valida, debe ser JPG|PNG";
-		}	
-		
+			mensaje ="La foto enviada no es válida, debe ser JPG|PNG";
+		}
 		return Utilidades.generateResponse(status, mensaje);
-	}	
+	}
+
 }
